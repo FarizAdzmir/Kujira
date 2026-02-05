@@ -75,7 +75,8 @@ export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // ScrollTrigger animation
+    // ScrollTrigger animation — high refreshPriority so its pin-spacing
+    // is resolved before downstream ScrollTriggers (Menu, etc.) calculate.
     const scrollTrigger = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
@@ -85,6 +86,7 @@ export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
       scrub: 0.3,
       anticipatePin: 1,
       invalidateOnRefresh: true,
+      refreshPriority: 1,
       onUpdate: (self) => {
         const frameIndex = Math.floor(self.progress * (frameCount - 1));
         renderFrame(frameIndex);

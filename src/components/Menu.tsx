@@ -111,6 +111,8 @@ export default function Menu() {
   }, [])
 
   // GSAP horizontal scroll on desktop
+  // Delay setup so the Hero's pinned ScrollTrigger (which adds pin-spacing)
+  // is already in place and start/end positions calculate correctly.
   useEffect(() => {
     const scrollEl = scrollRef.current
     const containerEl = containerRef.current
@@ -119,7 +121,6 @@ export default function Menu() {
     const mm = gsap.matchMedia()
 
     mm.add("(min-width: 1025px)", () => {
-      // Calculate how far the scroll track needs to move
       const getScrollAmount = () => {
         return -(scrollEl.scrollWidth - window.innerWidth)
       }
@@ -135,7 +136,14 @@ export default function Menu() {
           scrub: 1,
           invalidateOnRefresh: true,
           anticipatePin: 1,
+          // Lower priority so it recalculates after Hero's pin
+          refreshPriority: -1,
         },
+      })
+
+      // Force a refresh after a frame so all pin-spacing is accounted for
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh()
       })
 
       return () => {
