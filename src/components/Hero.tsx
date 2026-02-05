@@ -25,17 +25,14 @@ export default function Hero({ isLoaded }: HeroProps) {
     const frameCount = 150;
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
-    let successCount = 0;
 
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
-      img.crossOrigin = "anonymous";
       const frameNum = String(i).padStart(3, '0');
       
       img.onload = () => {
         loadedCount++;
-        successCount++;
-        if (loadedCount === frameCount && successCount > 0) {
+        if (loadedCount === frameCount) {
           imagesRef.current = images;
           setImagesLoaded(true);
         }
@@ -43,8 +40,7 @@ export default function Hero({ isLoaded }: HeroProps) {
       
       img.onerror = () => {
         loadedCount++;
-        // Continue even if some images fail, but only enable animation if at least some loaded
-        if (loadedCount === frameCount && successCount > 0) {
+        if (loadedCount === frameCount) {
           imagesRef.current = images;
           setImagesLoaded(true);
         }
@@ -94,8 +90,8 @@ export default function Hero({ isLoaded }: HeroProps) {
       canvas.style.width = `${drawWidth}px`;
       canvas.style.height = `${drawHeight}px`;
       
-      // Draw first frame only if properly loaded
-      if (images[0] && images[0].complete && images[0].naturalWidth > 0 && images[0].naturalHeight > 0) {
+      // Draw first frame
+      if (images[0] && images[0].complete) {
         ctx.drawImage(images[0], 0, 0, canvas.width, canvas.height);
       }
     };
@@ -104,8 +100,7 @@ export default function Hero({ isLoaded }: HeroProps) {
       const index = Math.min(Math.max(frameIndex, 0), frameCount - 1);
       const img = images[index];
       
-      // Only draw if image is fully loaded and not broken
-      if (img && img.complete && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      if (img && img.complete && img.naturalWidth > 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       }

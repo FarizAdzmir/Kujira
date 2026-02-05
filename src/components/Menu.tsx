@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-import MenuCard from "./MenuCard"
 
 interface MenuItem {
   japanese: string
@@ -14,8 +13,7 @@ const menuItems: MenuItem[] = [
   {
     japanese: "大トロ",
     name: "Otoro",
-    description:
-      "Premium fatty bluefin tuna belly, the crown jewel of omakase. Its rich marbling creates an unparalleled melt-in-your-mouth texture with deep, buttery umami that lingers gracefully.",
+    description: "Premium fatty bluefin tuna belly, melt-in-your-mouth texture",
     price: "$48",
     image: "/images/menu/otoro.jpeg",
     alt: "Otoro - Premium fatty tuna",
@@ -23,8 +21,7 @@ const menuItems: MenuItem[] = [
   {
     japanese: "雲丹",
     name: "Uni",
-    description:
-      "Hokkaido sea urchin, harvested from the pristine waters of northern Japan. Each piece offers a briny sweetness with a creamy, custard-like finish that embodies the essence of the sea.",
+    description: "Hokkaido sea urchin, briny sweetness with creamy finish",
     price: "$36",
     image: "/images/menu/uni.jpeg",
     alt: "Uni - Hokkaido sea urchin",
@@ -32,53 +29,23 @@ const menuItems: MenuItem[] = [
   {
     japanese: "和牛",
     name: "A5 Wagyu",
-    description:
-      "Exquisitely seared Miyazaki wagyu beef, graded A5 for its exceptional marbling. Served with truffle ponzu, each bite reveals layers of rich, beefy flavor and silken texture.",
+    description: "Seared Miyazaki wagyu with truffle ponzu",
     price: "$32",
     image: "/images/menu/wagyu.jpeg",
     alt: "A5 Wagyu - Seared Miyazaki beef",
   },
   {
-    japanese: "いくら",
-    name: "Ikura",
-    description:
-      "Glistening salmon roe marinated in our house dashi and soy blend. These jewel-like pearls burst with oceanic brininess, releasing waves of umami with each delicate pop.",
-    price: "$28",
-    image: "/images/menu/otoro.jpeg",
-    alt: "Ikura - Marinated salmon roe",
-  },
-  {
-    japanese: "帆立",
-    name: "Hotate",
-    description:
-      "Hand-dived Hokkaido scallop, pristine and sweet. Lightly torched to caramelize the edges while preserving its tender, almost creamy center. A symphony of subtle sweetness.",
-    price: "$30",
-    image: "/images/menu/uni.jpeg",
-    alt: "Hotate - Hokkaido scallop",
-  },
-  {
     japanese: "甘海老",
     name: "Amaebi",
-    description:
-      "Sweet shrimp from the cold depths of Hokkaido waters. Served raw to showcase its natural sweetness and delicate, almost ethereal texture that dissolves on the palate.",
+    description: "Sweet shrimp, delicate and pristine from Hokkaido waters",
     price: "$28",
     image: "/images/menu/amaebi.jpeg",
     alt: "Amaebi - Sweet shrimp",
   },
   {
-    japanese: "小鰭",
-    name: "Kohada",
-    description:
-      "Gizzard shad, the true mark of an itamae's skill. Cured with salt and rice vinegar to achieve perfect balance—its silvery skin glistening, flavor complex and refined.",
-    price: "$22",
-    image: "/images/menu/wagyu.jpeg",
-    alt: "Kohada - Gizzard shad",
-  },
-  {
     japanese: "穴子",
     name: "Anago",
-    description:
-      "Conger eel, slowly simmered until impossibly tender, then finished with our house-made sweet soy glaze. Its delicate flesh and subtle sweetness represent the pinnacle of Edomae tradition.",
+    description: "Conger eel with house-made sweet soy glaze",
     price: "$24",
     image: "/images/menu/anago.jpeg",
     alt: "Anago - Conger eel",
@@ -87,14 +54,14 @@ const menuItems: MenuItem[] = [
 
 export default function Menu() {
   const sectionRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const reveals = entry.target.querySelectorAll(".reveal")
+            const reveals = entry.target.querySelectorAll(".reveal, .reveal-scale")
             reveals.forEach((el, index) => {
               setTimeout(() => {
                 el.classList.add("revealed")
@@ -103,40 +70,38 @@ export default function Menu() {
           }
         })
       },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     )
 
-    if (headerRef.current) {
-      observer.observe(headerRef.current)
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
     }
 
     return () => observer.disconnect()
   }, [])
 
   return (
-    <section ref={sectionRef} id="menu" style={{ backgroundColor: "#0a0a0a" }}>
+    <section
+      ref={sectionRef}
+      id="menu"
+      className="relative py-32"
+      style={{ backgroundColor: "#141414" }}
+    >
       {/* Header */}
-      <div
-        ref={headerRef}
-        className="relative z-20 mx-auto flex max-w-[1400px] flex-col items-start justify-between gap-4 px-8 pb-8 pt-32 md:flex-row md:items-end"
-      >
+      <div className="relative z-20 max-w-[1400px] mx-auto px-8 mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div className="max-w-[600px]">
-          <span className="reveal mb-4 flex translate-y-10 items-center gap-4 font-heading text-xs font-normal uppercase tracking-[0.3em] text-[#c9a962] opacity-0 transition-all duration-1000">
-            <span className="h-px w-10 bg-[#c9a962]" aria-hidden="true" />
+          <span className="reveal opacity-0 translate-y-10 transition-all duration-1000 font-heading text-xs font-normal tracking-[0.3em] uppercase text-[#c9a962] mb-4 flex items-center gap-4">
+            <span className="w-10 h-px bg-[#c9a962]" aria-hidden="true" />
             Signature Selection
           </span>
-          <h2 className="reveal translate-y-10 font-heading text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.1] tracking-tight text-[#f5f0e6] opacity-0 transition-all duration-1000 delay-100">
+          <h2 className="reveal opacity-0 translate-y-10 transition-all duration-1000 delay-100 font-heading text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.1] tracking-tight text-[#f5f0e6]">
             Omakase Highlights
           </h2>
-          <p className="reveal mt-4 max-w-md translate-y-10 font-body text-base font-light leading-relaxed text-[#8a8a8a] opacity-0 transition-all duration-1000 delay-200">
-            Each piece tells a story of tradition, craftsmanship, and the
-            finest ingredients sourced from Japan's legendary markets.
-          </p>
         </div>
 
         <a
           href="#"
-          className="reveal group flex translate-y-10 items-center gap-2 font-heading text-sm font-normal uppercase tracking-[0.15em] text-[#f5f0e6] opacity-0 transition-all duration-1000 delay-300 hover:text-[#c9a962]"
+          className="reveal opacity-0 translate-y-10 transition-all duration-1000 delay-200 font-heading text-sm font-normal tracking-[0.15em] uppercase text-[#f5f0e6] flex items-center gap-2 hover:text-[#c9a962] group"
         >
           View Full Menu
           <svg
@@ -144,27 +109,76 @@ export default function Menu() {
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
-            className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+            className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
           >
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </a>
       </div>
 
-      {/* Stacking Cards Container */}
-      <div className="relative">
+      {/* Horizontal scroll container */}
+      <div
+        ref={scrollRef}
+        className="relative z-20 flex gap-8 overflow-x-auto pb-4 snap-x snap-proximity scrollbar-hide"
+        style={{
+          paddingLeft: "max(2rem, calc((100vw - 1400px) / 2 + 2rem))",
+          paddingRight: "2rem",
+        }}
+      >
         {menuItems.map((item, index) => (
-          <MenuCard
+          <article
             key={item.name}
-            {...item}
-            index={index}
-            total={menuItems.length}
-          />
+            className={`reveal-scale opacity-0 scale-95 transition-all duration-700 flex-shrink-0 w-[350px] md:w-[350px] snap-start relative overflow-visible cursor-pointer group`}
+            style={{ transitionDelay: `${index * 100}ms` }}
+          >
+            {/* Image container */}
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#1a1a1a] rounded-sm">
+              <img
+                src={item.image || "/placeholder.svg"}
+                alt={item.alt}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+
+              {/* Overlay gradient */}
+              <div
+                className="absolute inset-0 z-[3] pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.8) 20%, rgba(10, 10, 10, 0.5) 40%, rgba(10, 10, 10, 0.15) 60%, transparent 75%)",
+                }}
+              />
+
+              {/* Price tag */}
+              <span className="absolute top-4 right-4 font-heading text-sm font-normal text-[#c9a962] bg-[rgba(10,10,10,0.8)] px-4 py-2 tracking-[0.1em] z-[3]">
+                {item.price}
+              </span>
+            </div>
+
+            {/* Content */}
+            <div className="absolute bottom-0 left-0 w-full p-8 pb-16 z-10 pointer-events-none">
+              <span className="font-japanese text-sm text-[#c9a962] tracking-[0.2em] mb-2 block">
+                {item.japanese}
+              </span>
+              <h3 className="font-heading text-2xl font-normal text-[#f5f0e6] mb-2">
+                {item.name}
+              </h3>
+              <p className="font-body text-sm font-light text-[#d4cfc5] leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+
+            {/* Bottom fade */}
+            <div
+              className="absolute -bottom-px left-0 w-full h-20 pointer-events-none z-[5]"
+              style={{
+                background:
+                  "linear-gradient(to bottom, transparent 0%, rgba(20, 20, 20, 0.4) 30%, rgba(20, 20, 20, 0.8) 60%, #141414 100%)",
+              }}
+            />
+          </article>
         ))}
       </div>
 
-      {/* Bottom spacing */}
-      <div className="h-[20vh]" />
     </section>
   )
 }
