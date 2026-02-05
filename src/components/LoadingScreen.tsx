@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 interface LoadingScreenProps {
   onLoadComplete: (images: HTMLImageElement[]) => void
@@ -31,7 +31,6 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
         if (loadedCount === frameCount) {
           setTimeout(() => {
             setDone(true)
-            // Let the exit animation play, then signal parent
             setTimeout(() => onLoadComplete(images), 900)
           }, 400)
         }

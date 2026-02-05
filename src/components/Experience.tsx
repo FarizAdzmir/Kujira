@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react"
 import { useRef, type MouseEvent } from "react"
 import {
   fadeUp,
@@ -47,24 +47,16 @@ function ExperienceCard({
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
-    stiffness: 200,
-    damping: 20,
-  })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
-    stiffness: 200,
-    damping: 20,
-  })
+  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], [8, -8])
+  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], [-8, 8])
+  const rotateX = useSpring(rawRotateX, { stiffness: 200, damping: 20 })
+  const rotateY = useSpring(rawRotateY, { stiffness: 200, damping: 20 })
 
   // Icon float follows mouse
-  const iconX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]), {
-    stiffness: 150,
-    damping: 15,
-  })
-  const iconY = useSpring(useTransform(mouseY, [-0.5, 0.5], [-6, 6]), {
-    stiffness: 150,
-    damping: 15,
-  })
+  const rawIconX = useTransform(mouseX, [-0.5, 0.5], [-6, 6])
+  const rawIconY = useTransform(mouseY, [-0.5, 0.5], [-6, 6])
+  const iconX = useSpring(rawIconX, { stiffness: 150, damping: 15 })
+  const iconY = useSpring(rawIconY, { stiffness: 150, damping: 15 })
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect()
