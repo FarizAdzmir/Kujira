@@ -1,4 +1,8 @@
 import { useEffect, useRef } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface MenuItem {
   japanese: string
@@ -50,12 +54,38 @@ const menuItems: MenuItem[] = [
     image: "/images/menu/anago.jpeg",
     alt: "Anago - Conger eel",
   },
+  {
+    japanese: "いくら",
+    name: "Ikura",
+    description: "Marinated salmon roe, jewel-like pearls bursting with umami",
+    price: "$30",
+    image: "/images/menu/ikura.jpg",
+    alt: "Ikura - Marinated salmon roe",
+  },
+  {
+    japanese: "金目鯛",
+    name: "Kinmedai",
+    description: "Golden-eye snapper, torch-seared with yuzu and sea salt",
+    price: "$34",
+    image: "/images/menu/kinmedai.jpg",
+    alt: "Kinmedai - Golden-eye snapper",
+  },
+  {
+    japanese: "中トロ",
+    name: "Chutoro",
+    description: "Medium fatty tuna, the perfect balance of lean and rich",
+    price: "$42",
+    image: "/images/menu/chutoro.jpg",
+    alt: "Chutoro - Medium fatty tuna",
+  },
 ]
 
 export default function Menu() {
   const sectionRef = useRef<HTMLElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
+  // Reveal animations on scroll into view
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -80,105 +110,91 @@ export default function Menu() {
     return () => observer.disconnect()
   }, [])
 
+  // GSAP horizontal scroll on desktop
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    const containerEl = containerRef.current
+    if (!scrollEl || !containerEl) return
+
+    const mm = gsap.matchMedia()
+
+    mm.add("(min-width: 1025px)", () => {
+      // Calculate how far the scroll track needs to move
+      const getScrollAmount = () => {
+        return -(scrollEl.scrollWidth - window.innerWidth)
+      }
+
+      const tween = gsap.to(scrollEl, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerEl,
+          start: "top top",
+          end: () => `+=${Math.abs(getScrollAmount())}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        },
+      })
+
+      return () => {
+        tween.kill()
+      }
+    })
+
+    return () => mm.revert()
+  }, [])
+
   return (
-    <section
-      ref={sectionRef}
-      id="menu"
-      className="relative py-32"
-      style={{ backgroundColor: "#141414" }}
-    >
+    <section ref={sectionRef} id="menu" className="menu">
       {/* Header */}
-      <div className="relative z-20 max-w-[1400px] mx-auto px-8 mb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div className="max-w-[600px]">
-          <span className="reveal opacity-0 translate-y-10 transition-all duration-1000 font-heading text-xs font-normal tracking-[0.3em] uppercase text-[#c9a962] mb-4 flex items-center gap-4">
-            <span className="w-10 h-px bg-[#c9a962]" aria-hidden="true" />
+      <div className="menu__header">
+        <div className="menu__title-group">
+          <span className="menu__label reveal">
             Signature Selection
           </span>
-          <h2 className="reveal opacity-0 translate-y-10 transition-all duration-1000 delay-100 font-heading text-[clamp(2rem,4vw,3.5rem)] font-light leading-[1.1] tracking-tight text-[#f5f0e6]">
+          <h2 className="menu__title reveal">
             Omakase Highlights
           </h2>
         </div>
 
-        <a
-          href="#"
-          className="reveal opacity-0 translate-y-10 transition-all duration-1000 delay-200 font-heading text-sm font-normal tracking-[0.15em] uppercase text-[#f5f0e6] flex items-center gap-2 hover:text-[#c9a962] group"
-        >
+        <a href="#" className="menu__view-all reveal" onClick={(e) => e.preventDefault()}>
           View Full Menu
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-          >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </a>
       </div>
 
-      {/* Horizontal scroll container */}
-      <div
-        ref={scrollRef}
-        className="relative z-20 flex gap-8 overflow-x-auto pb-4 snap-x snap-proximity scrollbar-hide"
-        style={{
-          paddingLeft: "max(2rem, calc((100vw - 1400px) / 2 + 2rem))",
-          paddingRight: "2rem",
-        }}
-      >
-        {menuItems.map((item, index) => (
-          <article
-            key={item.name}
-            className={`reveal-scale opacity-0 scale-95 transition-all duration-700 flex-shrink-0 w-[350px] md:w-[350px] snap-start relative overflow-visible cursor-pointer group`}
-            style={{ transitionDelay: `${index * 100}ms` }}
-          >
-            {/* Image container */}
-            <div className="relative aspect-[4/5] overflow-hidden bg-[#1a1a1a] rounded-sm">
-              <img
-                src={item.image || "/placeholder.svg"}
-                alt={item.alt}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+      {/* Scrollable menu container */}
+      <div ref={containerRef} className="menu__container">
+        <div ref={scrollRef} className="menu__scroll">
+          {menuItems.map((item, index) => (
+            <article
+              key={item.name}
+              className="menu__item reveal-scale"
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="menu__item-image">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  loading={index < 3 ? "eager" : "lazy"}
+                />
+                <div className="menu__item-overlay" />
+                <span className="menu__item-price">{item.price}</span>
+              </div>
 
-              {/* Overlay gradient */}
-              <div
-                className="absolute inset-0 z-[3] pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.8) 20%, rgba(10, 10, 10, 0.5) 40%, rgba(10, 10, 10, 0.15) 60%, transparent 75%)",
-                }}
-              />
-
-              {/* Price tag */}
-              <span className="absolute top-4 right-4 font-heading text-sm font-normal text-[#c9a962] bg-[rgba(10,10,10,0.8)] px-4 py-2 tracking-[0.1em] z-[3]">
-                {item.price}
-              </span>
-            </div>
-
-            {/* Content */}
-            <div className="absolute bottom-0 left-0 w-full p-8 pb-16 z-10 pointer-events-none">
-              <span className="font-japanese text-sm text-[#c9a962] tracking-[0.2em] mb-2 block">
-                {item.japanese}
-              </span>
-              <h3 className="font-heading text-2xl font-normal text-[#f5f0e6] mb-2">
-                {item.name}
-              </h3>
-              <p className="font-body text-sm font-light text-[#d4cfc5] leading-relaxed">
-                {item.description}
-              </p>
-            </div>
-
-            {/* Bottom fade */}
-            <div
-              className="absolute -bottom-px left-0 w-full h-20 pointer-events-none z-[5]"
-              style={{
-                background:
-                  "linear-gradient(to bottom, transparent 0%, rgba(20, 20, 20, 0.4) 30%, rgba(20, 20, 20, 0.8) 60%, #141414 100%)",
-              }}
-            />
-          </article>
-        ))}
+              <div className="menu__item-content">
+                <span className="menu__item-japanese">{item.japanese}</span>
+                <h3 className="menu__item-name">{item.name}</h3>
+                <p className="menu__item-desc">{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
-
     </section>
   )
 }

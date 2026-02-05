@@ -863,13 +863,15 @@
     z-index: 3;
   }
   
-  /* Desktop: Horizontal scroll-jacking */
+  /* Desktop: GSAP horizontal scroll-jacking */
   @media (min-width: 1025px) {
     .menu__container {
-      min-height: 100vh;
+      overflow: hidden;
     }
 
     .menu__scroll {
+      flex-wrap: nowrap;
+      overflow: visible;
       padding-bottom: var(--space-xl);
     }
   }
