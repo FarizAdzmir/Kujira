@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
@@ -13,6 +13,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
+
+  // Always start at the top on page load / refresh
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleLoadComplete = useCallback((images: HTMLImageElement[]) => {
     preloadedImagesRef.current = images;
