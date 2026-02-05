@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -6,60 +6,26 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface HeroProps {
   isLoaded: boolean;
+  preloadedImages: HTMLImageElement[];
 }
 
-export default function Hero({ isLoaded }: HeroProps) {
+export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const heroJapaneseRef = useRef<HTMLHeadingElement>(null);
   const heroTitleRef = useRef<HTMLParagraphElement>(null);
   const heroTaglineRef = useRef<HTMLParagraphElement>(null);
   const heroScrollRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  // Preload images
-  useEffect(() => {
-    if (!isLoaded) return;
-    
-    const frameCount = 150;
-    const images: HTMLImageElement[] = [];
-    let loadedCount = 0;
-
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      const frameNum = String(i).padStart(3, '0');
-      
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === frameCount) {
-          imagesRef.current = images;
-          setImagesLoaded(true);
-        }
-      };
-      
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === frameCount) {
-          imagesRef.current = images;
-          setImagesLoaded(true);
-        }
-      };
-      
-      img.src = `/images/frames/frame_${frameNum}.jpg`;
-      images.push(img);
-    }
-  }, [isLoaded]);
 
   // Canvas setup and scroll animation
   useEffect(() => {
-    if (!imagesLoaded || !canvasRef.current || !containerRef.current) return;
+    if (!isLoaded || preloadedImages.length === 0 || !canvasRef.current || !containerRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const images = imagesRef.current;
+    const images = preloadedImages;
     const frameCount = images.length;
 
     const resizeCanvas = () => {
@@ -129,7 +95,7 @@ export default function Hero({ isLoaded }: HeroProps) {
       window.removeEventListener('resize', resizeCanvas);
       scrollTrigger.kill();
     };
-  }, [imagesLoaded]);
+  }, [isLoaded, preloadedImages]);
 
   // Hero content animation
   useEffect(() => {
@@ -165,7 +131,7 @@ export default function Hero({ isLoaded }: HeroProps) {
   return (
     <section className="hero" id="hero" ref={containerRef}>
       <div className="hero__canvas-container">
-        <canvas className="hero__canvas" ref={canvasRef} />
+        <canvas className="hero__canvas" ref={canvasRef} role="img" aria-label="Sushi preparation animation" />
         <div className="hero__overlay" />
         <div className="hero__fade" />
         

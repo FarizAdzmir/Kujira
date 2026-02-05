@@ -133,41 +133,52 @@ export default function Experience() {
     const rect = item.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
     const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
-    
+
     gsap.to(item, {
       rotateY: x,
       rotateX: -y,
       duration: 0.3,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      overwrite: 'auto'
     });
 
-    // Move icon slightly
     const icon = item.querySelector('.experience__icon');
-    gsap.to(icon, {
-      x: x * 0.5,
-      y: y * 0.5,
-      duration: 0.3,
-      ease: 'power2.out'
-    });
+    if (icon) {
+      gsap.to(icon, {
+        x: x * 0.5,
+        y: y * 0.5,
+        duration: 0.3,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+
+    // Update CSS custom properties for radial gradient mask
+    item.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    item.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     const item = e.currentTarget;
     const icon = item.querySelector('.experience__icon');
-    
+
     gsap.to(item, {
       rotateY: 0,
       rotateX: 0,
       duration: 0.5,
-      ease: 'power2.out'
+      ease: 'power2.out',
+      overwrite: 'auto'
     });
 
-    gsap.to(icon, {
-      x: 0,
-      y: 0,
-      duration: 0.5,
-      ease: 'power2.out'
-    });
+    if (icon) {
+      gsap.to(icon, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
   };
 
   return (

@@ -177,73 +177,98 @@ export default function Reservation() {
           Our intimate 12-seat counter fills quickly. Reserve your omakase experience and discover why Kujira has been called &quot;a transcendent journey through Japanese culinary art.&quot;
         </p>
         
-        <form className="reservation__form" ref={formRef} onSubmit={handleSubmit}>
+        <form className="reservation__form" ref={formRef} onSubmit={handleSubmit} noValidate>
           <div className="reservation__row">
-            <input 
-              type="text" 
-              className="reservation__input" 
-              placeholder="Your Name" 
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
-              required 
-            />
-            <input 
-              type="email" 
-              className="reservation__input" 
-              placeholder="Email Address" 
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
-              required 
-            />
+            <div className="reservation__field">
+              <label htmlFor="res-name" className="sr-only">Your Name</label>
+              <input 
+                id="res-name"
+                type="text" 
+                className="reservation__input" 
+                placeholder="Your Name" 
+                name="name"
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
+              />
+            </div>
+            <div className="reservation__field">
+              <label htmlFor="res-email" className="sr-only">Email Address</label>
+              <input 
+                id="res-email"
+                type="email" 
+                className="reservation__input" 
+                placeholder="Email Address" 
+                name="email"
+                autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
+              />
+            </div>
           </div>
           <div className="reservation__row">
-            <input 
-              type="date" 
-              className="reservation__input" 
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
-              required 
-            />
-            <select 
-              className="reservation__input" 
-              name="partySize"
-              value={formData.partySize}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
-              required
-            >
-              <option value="" disabled>Party Size</option>
-              <option value="1">1 Guest</option>
-              <option value="2">2 Guests</option>
-              <option value="3">3 Guests</option>
-              <option value="4">4 Guests</option>
-            </select>
+            <div className="reservation__field">
+              <label htmlFor="res-date" className="sr-only">Reservation Date</label>
+              <input 
+                id="res-date"
+                type="date" 
+                className="reservation__input" 
+                name="date"
+                aria-label="Reservation date"
+                value={formData.date}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
+              />
+            </div>
+            <div className="reservation__field">
+              <label htmlFor="res-party" className="sr-only">Party Size</label>
+              <select 
+                id="res-party"
+                className="reservation__input" 
+                name="partySize"
+                aria-label="Party size"
+                value={formData.partySize}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required
+              >
+                <option value="" disabled>Party Size</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+              </select>
+            </div>
           </div>
-          <input 
-            type="tel" 
-            className="reservation__input" 
-            placeholder="Phone Number" 
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
-          />
+          <div className="reservation__field">
+            <label htmlFor="res-phone" className="sr-only">Phone Number</label>
+            <input 
+              id="res-phone"
+              type="tel" 
+              className="reservation__input" 
+              placeholder="Phone Number" 
+              name="phone"
+              autoComplete="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+            />
+          </div>
           <button type="submit" className="reservation__button" style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}>
             Request Reservation
           </button>

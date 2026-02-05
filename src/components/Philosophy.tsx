@@ -41,6 +41,7 @@ export default function Philosophy() {
           <span
             className="font-japanese text-[clamp(8rem,20vw,16rem)] font-light text-[#c9a962] opacity-15 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 leading-none"
             style={{ writingMode: "vertical-rl" }}
+            aria-hidden="true"
           >
             匠
           </span>

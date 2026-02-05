@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
@@ -12,22 +12,26 @@ import Reservation from './components/Reservation';
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
 
-  const handleLoadComplete = () => {
+  const handleLoadComplete = useCallback((images: HTMLImageElement[]) => {
+    preloadedImagesRef.current = images;
     setIsLoading(false);
     setIsLoaded(true);
-  };
+  }, []);
 
   return (
     <>
       {isLoading && <LoadingScreen onLoadComplete={handleLoadComplete} />}
       
-      <div className="grain" />
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+      
+      <div className="grain" aria-hidden="true" />
       
       <Navigation />
       
-      <main>
-        <Hero isLoaded={isLoaded} />
+      <main id="main-content">
+        <Hero isLoaded={isLoaded} preloadedImages={preloadedImagesRef.current} />
         
         <div className="main-content">
           <div className="background-kanji" aria-hidden="true">

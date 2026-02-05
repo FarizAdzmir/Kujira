@@ -1,55 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface LoadingScreenProps {
-  onLoadComplete: () => void;
+  onLoadComplete: (images: HTMLImageElement[]) => void;
 }
 
 export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [isHidden, setIsHidden] = useState(false);
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    const frameCount = 150; // Match the actual number of frames available
+    // Prevent double-invocation in StrictMode from loading images twice
+    if (hasStarted.current) return;
+    hasStarted.current = true;
+
+    const frameCount = 151;
     let loadedCount = 0;
     const images: HTMLImageElement[] = [];
 
-    const preloadImages = () => {
-      for (let i = 0; i < frameCount; i++) {
-        const img = new Image();
-        const frameNum = String(i).padStart(3, '0');
-        
-        img.onload = () => {
-          loadedCount++;
-          const currentProgress = Math.round((loadedCount / frameCount) * 100);
-          setProgress(currentProgress);
-          
-          if (loadedCount === frameCount) {
-            setTimeout(() => {
-              setIsHidden(true);
-              setTimeout(onLoadComplete, 800);
-            }, 500);
-          }
-        };
-        
-        img.onerror = () => {
-          loadedCount++;
-          const currentProgress = Math.round((loadedCount / frameCount) * 100);
-          setProgress(currentProgress);
-          
-          if (loadedCount === frameCount) {
-            setTimeout(() => {
-              setIsHidden(true);
-              setTimeout(onLoadComplete, 800);
-            }, 500);
-          }
-        };
-        
-        img.src = `/images/frames/frame_${frameNum}.jpg`;
-        images.push(img);
-      }
-    };
+    for (let i = 0; i <= 150; i++) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      const frameNum = String(i).padStart(3, '0');
 
-    preloadImages();
+      const onComplete = () => {
+        loadedCount++;
+        const currentProgress = Math.round((loadedCount / frameCount) * 100);
+        setProgress(currentProgress);
+
+        if (loadedCount === frameCount) {
+          setTimeout(() => {
+            setIsHidden(true);
+            setTimeout(() => onLoadComplete(images), 800);
+          }, 500);
+        }
+      };
+
+      img.onload = onComplete;
+      img.onerror = onComplete;
+      img.src = `/images/frames/frame_${frameNum}.jpg`;
+      images.push(img);
+    }
   }, [onLoadComplete]);
 
   return (

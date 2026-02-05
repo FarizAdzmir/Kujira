@@ -1,4 +1,6 @@
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -7,8 +9,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="footer">
-      <span className="footer__kanji">鯨</span>
+    <footer className="footer" role="contentinfo">
+      <span className="footer__kanji" aria-hidden="true">鯨</span>
       <div className="footer__container">
         <div className="footer__brand">
           <div className="footer__logo">鯨</div>
@@ -79,7 +81,7 @@ export default function Footer() {
       </div>
       
       <div className="footer__bottom">
-        <p className="footer__copyright">© 2025 Kujira. All rights reserved.</p>
+        <p className="footer__copyright">&copy; {currentYear} Kujira. All rights reserved.</p>
         <div className="footer__legal">
           <a href="#" className="footer__legal-link">Privacy Policy</a>
           <a href="#" className="footer__legal-link">Terms of Service</a>
