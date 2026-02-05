@@ -1,5 +1,3 @@
-"use client"
-
 import { useTransform, useScroll, motion } from "framer-motion"
 import type { MotionValue } from "framer-motion"
 import { useRef } from "react"
