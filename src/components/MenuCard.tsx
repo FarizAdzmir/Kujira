@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+"use client"
 
-gsap.registerPlugin(ScrollTrigger)
+import { useTransform, useScroll, motion } from "framer-motion"
+import type { MotionValue } from "framer-motion"
+import { useRef } from "react"
+import styles from "./MenuCard.module.scss"
 
 interface MenuCardProps {
   japanese: string
@@ -13,6 +14,9 @@ interface MenuCardProps {
   alt: string
   index: number
   total: number
+  progress: MotionValue<number>
+  range: [number, number]
+  targetScale: number
 }
 
 export default function MenuCard({
@@ -23,151 +27,73 @@ export default function MenuCard({
   image,
   alt,
   index,
-  total,
+  progress,
+  range,
+  targetScale,
 }: MenuCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLImageElement>(null)
+  const container = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const card = cardRef.current
-    const inner = innerRef.current
-    const img = imageRef.current
+  const { scrollYProgress } = useScroll({
+    target: container,
+    offset: ["start end", "start start"],
+  })
 
-    if (!card || !inner || !img) return
-
-    // Calculate target scale - cards get smaller as they stack
-    const targetScale = 1 - (total - 1 - index) * 0.05
-
-    // Create the parallax/scale effect for the card
-    const ctx = gsap.context(() => {
-      // Scale down the card as user scrolls past it
-      gsap.to(inner, {
-        scale: targetScale,
-        ease: "none",
-        scrollTrigger: {
-          trigger: card,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      })
-
-      // Scale the image from 1.5 to 1 as it enters viewport
-      gsap.fromTo(
-        img,
-        { scale: 1.5 },
-        {
-          scale: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            start: "top bottom",
-            end: "top top",
-            scrub: true,
-          },
-        }
-      )
-    }, card)
-
-    return () => ctx.revert()
-  }, [index, total])
+  const imageScale = useTransform(scrollYProgress, [0, 1], [2, 1])
+  const scale = useTransform(progress, range, [1, targetScale])
 
   return (
-    <div
-      ref={cardRef}
-      className="h-screen w-full"
-      style={{ paddingTop: index === 0 ? "0" : "0" }}
-    >
-      <div
-        ref={innerRef}
-        className="sticky top-0 flex h-screen w-full items-center justify-center px-4 py-8 md:px-8 lg:px-16"
+    <div ref={container} className={styles.cardContainer}>
+      <motion.div
+        className={styles.card}
         style={{
-          top: `calc(${index * 25}px)`,
+          backgroundColor: "#1a1a1a",
+          scale,
+          top: `calc(-5vh + ${index * 25}px)`,
         }}
       >
-        {/* Card Container */}
-        <div
-          className="relative flex h-[85vh] w-full max-w-[1400px] overflow-hidden rounded-lg"
-          style={{ backgroundColor: "#1a1a1a" }}
-        >
-          {/* Image Section - Left */}
-          <div className="relative h-full w-full overflow-hidden md:w-1/2">
-            <img
-              ref={imageRef}
-              src={image}
-              alt={alt}
-              className="h-full w-full object-cover"
-              style={{ transformOrigin: "center center" }}
-            />
-            {/* Overlay gradient */}
-            <div
-              className="absolute inset-0 z-[2]"
-              style={{
-                background:
-                  "linear-gradient(to right, transparent 50%, #1a1a1a 100%)",
-              }}
-            />
-            <div
-              className="absolute inset-0 z-[1]"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(26, 26, 26, 0.6) 0%, transparent 40%)",
-              }}
-            />
-          </div>
+        {/* Index badge */}
+        <span className={styles.indexBadge}>
+          {String(index + 1).padStart(2, "0")}
+        </span>
 
-          {/* Content Section - Right */}
-          <div className="absolute inset-0 flex flex-col justify-center p-8 md:relative md:w-1/2 md:p-12 lg:p-16">
-            {/* Background overlay for mobile */}
-            <div
-              className="absolute inset-0 z-0 md:hidden"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(26, 26, 26, 0.95) 0%, rgba(26, 26, 26, 0.8) 50%, rgba(26, 26, 26, 0.4) 100%)",
-              }}
-            />
+        <h2>{name}</h2>
 
-            <div className="relative z-10">
-              {/* Index number */}
-              <span className="font-heading text-8xl font-light text-[#c9a962] opacity-20 md:text-9xl">
-                {String(index + 1).padStart(2, "0")}
-              </span>
+        <div className={styles.body}>
+          <div className={styles.description}>
+            <span className={styles.japanese}>{japanese}</span>
+            <div className={styles.divider} />
+            <p>{description}</p>
 
-              {/* Japanese text */}
-              <span className="mt-4 block font-japanese text-lg tracking-[0.3em] text-[#c9a962]">
-                {japanese}
-              </span>
-
-              {/* Name */}
-              <h3 className="mt-2 font-heading text-4xl font-light tracking-tight text-[#f5f0e6] md:text-5xl lg:text-6xl">
-                {name}
-              </h3>
-
-              {/* Decorative line */}
-              <div className="my-6 h-px w-16 bg-[#c9a962]" />
-
-              {/* Description */}
-              <p className="max-w-md font-body text-base font-light leading-relaxed text-[#d4cfc5] md:text-lg">
-                {description}
-              </p>
-
-              {/* Price */}
-              <div className="mt-8 flex items-center gap-4">
-                <span className="font-heading text-2xl font-light tracking-wider text-[#c9a962]">
-                  {price}
-                </span>
-                <span className="font-body text-xs uppercase tracking-[0.2em] text-[#8a8a8a]">
-                  per piece
-                </span>
+            <div className={styles.footer}>
+              <div>
+                <span className={styles.price}>{price}</span>
+                <span className={styles.priceLabel}>per piece</span>
               </div>
+              <span className={styles.link}>
+                <a href="#menu">See more</a>
+                <svg
+                  width="22"
+                  height="12"
+                  viewBox="0 0 22 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.5303 6.53033C21.8232 6.23744 21.8232 5.76256 21.5303 5.46967L16.7574 0.696699C16.4645 0.403806 15.9896 0.403806 15.6967 0.696699C15.4038 0.989592 15.4038 1.46447 15.6967 1.75736L19.9393 6L15.6967 10.2426C15.4038 10.5355 15.4038 11.0104 15.6967 11.3033C15.9896 11.5962 16.4645 11.5962 16.7574 11.3033L21.5303 6.53033ZM0 6.75L21 6.75V5.25L0 5.25L0 6.75Z"
+                    fill="#f5f0e6"
+                  />
+                </svg>
+              </span>
             </div>
           </div>
 
-          {/* Card border accent */}
-          <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-[#c9a962] to-transparent opacity-30" />
+          <div className={styles.imageContainer}>
+            <motion.div className={styles.inner} style={{ scale: imageScale }}>
+              <img src={image} alt={alt} />
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

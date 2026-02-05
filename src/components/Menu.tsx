@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { useScroll } from "framer-motion"
 import MenuCard from "./MenuCard"
 
 interface MenuItem {
@@ -88,6 +89,12 @@ const menuItems: MenuItem[] = [
 export default function Menu() {
   const sectionRef = useRef<HTMLElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
+  const cardsContainerRef = useRef<HTMLDivElement>(null)
+
+  const { scrollYProgress } = useScroll({
+    target: cardsContainerRef,
+    offset: ["start start", "end end"],
+  })
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -152,15 +159,21 @@ export default function Menu() {
       </div>
 
       {/* Stacking Cards Container */}
-      <div className="relative">
-        {menuItems.map((item, index) => (
-          <MenuCard
-            key={item.name}
-            {...item}
-            index={index}
-            total={menuItems.length}
-          />
-        ))}
+      <div ref={cardsContainerRef} className="relative">
+        {menuItems.map((item, index) => {
+          const targetScale = 1 - (menuItems.length - index) * 0.05
+          return (
+            <MenuCard
+              key={item.name}
+              {...item}
+              index={index}
+              total={menuItems.length}
+              progress={scrollYProgress}
+              range={[index * (1 / menuItems.length), 1]}
+              targetScale={targetScale}
+            />
+          )
+        })}
       </div>
 
       {/* Bottom spacing */}
