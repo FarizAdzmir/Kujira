@@ -1,0 +1,363 @@
+// ============================================
+// Cards Parallax Effect - Olivier Larose
+// Adapted for Kujira Menu Section
+// ============================================
+
+.menu-parallax {
+  position: relative;
+  background-color: #0a0a0a;
+
+  // Header section
+  &__header {
+    position: relative;
+    z-index: 20;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 8rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+  }
+
+  &__header-content {
+    max-width: 600px;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #c9a962;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
+
+    &.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &::before {
+      content: '';
+      width: 2.5rem;
+      height: 1px;
+      background-color: #c9a962;
+    }
+  }
+
+  &__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #f5f0e6;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease 0.1s, transform 1s ease 0.1s;
+
+    &.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__subtitle {
+    max-width: 28rem;
+    margin-top: 1rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #8a8a8a;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease 0.2s, transform 1s ease 0.2s;
+
+    &.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #f5f0e6;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.3s ease, opacity 1s ease 0.3s, transform 1s ease 0.3s;
+
+    &.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &:hover {
+      color: #c9a962;
+
+      svg {
+        transform: translateX(0.25rem);
+      }
+    }
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  // Cards container
+  &__container {
+    position: relative;
+    margin-top: 50px;
+  }
+
+  // Individual card wrapper
+  &__card {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+
+    // Stagger each card slightly
+    &:nth-child(1) .menu-parallax__card-inner { top: 0; }
+    &:nth-child(2) .menu-parallax__card-inner { top: 25px; }
+    &:nth-child(3) .menu-parallax__card-inner { top: 50px; }
+    &:nth-child(4) .menu-parallax__card-inner { top: 75px; }
+    &:nth-child(5) .menu-parallax__card-inner { top: 100px; }
+    &:nth-child(6) .menu-parallax__card-inner { top: 125px; }
+    &:nth-child(7) .menu-parallax__card-inner { top: 150px; }
+    &:nth-child(8) .menu-parallax__card-inner { top: 175px; }
+  }
+
+  &__card-inner {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 85vh;
+    display: flex;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    padding: 0 1rem;
+    transform-origin: top;
+    
+    @media (min-width: 768px) {
+      padding: 0 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 0 4rem;
+    }
+  }
+
+  // Image section (left side)
+  &__image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center center;
+  }
+
+  &__image-overlay-right {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      to right,
+      transparent 50%,
+      #1a1a1a 100%
+    );
+  }
+
+  &__image-overlay-bottom {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      rgba(26, 26, 26, 0.6) 0%,
+      transparent 40%
+    );
+  }
+
+  // Content section (right side)
+  &__content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 10;
+
+    @media (min-width: 768px) {
+      position: relative;
+      width: 50%;
+      padding: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 4rem;
+    }
+  }
+
+  &__content-overlay-mobile {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      to top,
+      rgba(26, 26, 26, 0.95) 0%,
+      rgba(26, 26, 26, 0.8) 50%,
+      rgba(26, 26, 26, 0.4) 100%
+    );
+
+    @media (min-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__content-inner {
+    position: relative;
+    z-index: 10;
+  }
+
+  &__index {
+    font-family: var(--font-heading);
+    font-size: 8rem;
+    font-weight: 300;
+    color: #c9a962;
+    opacity: 0.2;
+    line-height: 1;
+
+    @media (min-width: 768px) {
+      font-size: 9rem;
+    }
+  }
+
+  &__japanese {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--font-japanese);
+    font-size: 1.125rem;
+    letter-spacing: 0.3em;
+    color: #c9a962;
+  }
+
+  &__name {
+    margin-top: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: #f5f0e6;
+    line-height: 1.1;
+
+    @media (min-width: 768px) {
+      font-size: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 3.75rem;
+    }
+  }
+
+  &__divider {
+    margin: 1.5rem 0;
+    width: 4rem;
+    height: 1px;
+    background-color: #c9a962;
+  }
+
+  &__description {
+    max-width: 28rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #d4cfc5;
+
+    @media (min-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+
+  &__price-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  &__price {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: #c9a962;
+  }
+
+  &__price-label {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #8a8a8a;
+  }
+
+  &__border-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      #c9a962 50%,
+      transparent 100%
+    );
+    opacity: 0.3;
+  }
+
+  // Bottom spacing
+  &__spacer {
+    height: 20vh;
+  }
+}
