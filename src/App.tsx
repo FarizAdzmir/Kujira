@@ -4,7 +4,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import Philosophy from './components/Philosophy';
-import ParallaxMenu from './components/ParallaxMenu';
+import OmakaseShowcase from './components/OmakaseShowcase';
 import Experience from './components/Experience';
 import Chef from './components/Chef';
 import Reservation from './components/Reservation';
@@ -37,7 +37,7 @@ function App() {
           </div>
 
           <Philosophy />
-          <ParallaxMenu />
+          <OmakaseShowcase />
           <Experience />
           <Chef />
           <Reservation />

@@ -1,0 +1,406 @@
+// ============================================
+// Omakase Showcase - Cards Parallax Effect
+// Completely isolated component - NO conflicts
+// ============================================
+
+.omakase-showcase {
+  position: relative;
+  background-color: #0a0a0a;
+  isolation: isolate;
+  
+  // ============================================
+  // HEADER SECTION
+  // ============================================
+  
+  &__header {
+    position: relative;
+    z-index: 20;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 8rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+  }
+
+  &__header-content {
+    max-width: 600px;
+  }
+
+  &__header-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #c9a962;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
+
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__header-label-line {
+    width: 2.5rem;
+    height: 1px;
+    background-color: #c9a962;
+  }
+
+  &__header-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #f5f0e6;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease 0.1s, transform 1s ease 0.1s;
+
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__header-subtitle {
+    max-width: 28rem;
+    margin-top: 1rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #8a8a8a;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease 0.2s, transform 1s ease 0.2s;
+
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &__header-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #f5f0e6;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.3s ease, opacity 1s ease 0.3s, transform 1s ease 0.3s;
+
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &:hover {
+      color: #c9a962;
+
+      .omakase-showcase__header-link-icon {
+        transform: translateX(0.25rem);
+      }
+    }
+  }
+
+  &__header-link-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.3s ease;
+  }
+
+  // ============================================
+  // CARDS CONTAINER
+  // ============================================
+
+  &__cards {
+    position: relative;
+    margin-top: 50px;
+  }
+
+  &__card-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__card {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 500px;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    margin: 0 20px;
+    transform-origin: top;
+
+    // Stagger each card - THIS IS KEY!
+    &[data-index="0"] {
+      top: 0;
+    }
+    &[data-index="1"] {
+      top: 25px;
+    }
+    &[data-index="2"] {
+      top: 50px;
+    }
+    &[data-index="3"] {
+      top: 75px;
+    }
+    &[data-index="4"] {
+      top: 100px;
+    }
+    &[data-index="5"] {
+      top: 125px;
+    }
+    &[data-index="6"] {
+      top: 150px;
+    }
+    &[data-index="7"] {
+      top: 175px;
+    }
+
+    @media (min-width: 768px) {
+      height: 500px;
+    }
+
+    @media (max-width: 767px) {
+      height: 600px;
+      flex-direction: column;
+    }
+  }
+
+  // ============================================
+  // IMAGE SECTION
+  // ============================================
+
+  &__card-image-section {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  &__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center center;
+  }
+
+  &__card-overlay-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to right, transparent 50%, #1a1a1a 100%);
+
+    @media (max-width: 767px) {
+      background: linear-gradient(to bottom, transparent 50%, #1a1a1a 100%);
+    }
+  }
+
+  &__card-overlay-bottom {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to top, rgba(26, 26, 26, 0.6) 0%, transparent 40%);
+  }
+
+  // ============================================
+  // CONTENT SECTION
+  // ============================================
+
+  &__card-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 10;
+
+    @media (min-width: 768px) {
+      position: relative;
+      width: 50%;
+      padding: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 4rem;
+    }
+  }
+
+  &__card-content-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+      to top,
+      rgba(26, 26, 26, 0.95) 0%,
+      rgba(26, 26, 26, 0.8) 50%,
+      rgba(26, 26, 26, 0.4) 100%
+    );
+
+    @media (min-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__card-content-inner {
+    position: relative;
+    z-index: 10;
+  }
+
+  &__card-index {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 7rem;
+    font-weight: 300;
+    color: #c9a962;
+    opacity: 0.2;
+    line-height: 1;
+    display: block;
+
+    @media (min-width: 768px) {
+      font-size: 8rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 9rem;
+    }
+  }
+
+  &__card-japanese {
+    display: block;
+    margin-top: 1rem;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    color: #c9a962;
+
+    @media (min-width: 768px) {
+      font-size: 1.125rem;
+    }
+  }
+
+  &__card-name {
+    margin-top: 0.5rem;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: #f5f0e6;
+    line-height: 1.1;
+
+    @media (min-width: 768px) {
+      font-size: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 3.75rem;
+    }
+  }
+
+  &__card-divider {
+    margin: 1.5rem 0;
+    width: 4rem;
+    height: 1px;
+    background-color: #c9a962;
+  }
+
+  &__card-description {
+    max-width: 28rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #d4cfc5;
+
+    @media (min-width: 768px) {
+      font-size: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 1.0625rem;
+    }
+  }
+
+  &__card-price-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  &__card-price {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: #c9a962;
+  }
+
+  &__card-price-label {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #8a8a8a;
+  }
+
+  &__card-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      #c9a962 50%,
+      transparent 100%
+    );
+    opacity: 0.3;
+  }
+
+  // ============================================
+  // SPACER
+  // ============================================
+
+  &__spacer {
+    height: 20vh;
+  }
+}
