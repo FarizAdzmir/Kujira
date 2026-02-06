@@ -1,4 +1,8 @@
 import { useEffect, useRef } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface MenuItem {
   japanese: string
@@ -50,34 +54,12 @@ const menuItems: MenuItem[] = [
     image: "/images/menu/anago.jpeg",
     alt: "Anago - Conger eel",
   },
-  {
-    japanese: "いくら",
-    name: "Ikura",
-    description: "Marinated salmon roe, jewel-like pearls bursting with umami",
-    price: "$30",
-    image: "/images/menu/ikura.jpg",
-    alt: "Ikura - Marinated salmon roe",
-  },
-  {
-    japanese: "金目鯛",
-    name: "Kinmedai",
-    description: "Golden-eye snapper, torch-seared with yuzu and sea salt",
-    price: "$34",
-    image: "/images/menu/kinmedai.jpg",
-    alt: "Kinmedai - Golden-eye snapper",
-  },
-  {
-    japanese: "中トロ",
-    name: "Chutoro",
-    description: "Medium fatty tuna, the perfect balance of lean and rich",
-    price: "$42",
-    image: "/images/menu/chutoro.jpg",
-    alt: "Chutoro - Medium fatty tuna",
-  },
 ]
 
 export default function Menu() {
   const sectionRef = useRef<HTMLElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Reveal animations on scroll into view
   useEffect(() => {
@@ -104,6 +86,46 @@ export default function Menu() {
     return () => observer.disconnect()
   }, [])
 
+  // GSAP horizontal scroll on desktop
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    const containerEl = containerRef.current
+    if (!scrollEl || !containerEl) return
+
+    const mm = gsap.matchMedia()
+
+    mm.add("(min-width: 1025px)", () => {
+      const getScrollAmount = () => {
+        return -(scrollEl.scrollWidth - window.innerWidth)
+      }
+
+      const tween = gsap.to(scrollEl, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerEl,
+          start: "top top",
+          end: () => `+=${Math.abs(getScrollAmount())}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          refreshPriority: -1,
+        },
+      })
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh()
+      })
+
+      return () => {
+        tween.kill()
+      }
+    })
+
+    return () => mm.revert()
+  }, [])
+
   return (
     <section ref={sectionRef} id="menu" className="menu">
       {/* Header */}
@@ -125,31 +147,33 @@ export default function Menu() {
         </a>
       </div>
 
-      {/* Horizontally scrollable cards */}
-      <div className="menu__scroll">
-        {menuItems.map((item, index) => (
-          <article
-            key={item.name}
-            className="menu__item reveal-scale"
-            style={{ transitionDelay: `${index * 100}ms` }}
-          >
-            <div className="menu__item-image">
-              <img
-                src={item.image}
-                alt={item.alt}
-                loading={index < 3 ? "eager" : "lazy"}
-              />
-              <div className="menu__item-overlay" />
-              <span className="menu__item-price">{item.price}</span>
-            </div>
+      {/* GSAP pinned horizontal scroll container */}
+      <div ref={containerRef} className="menu__container">
+        <div ref={scrollRef} className="menu__scroll">
+          {menuItems.map((item, index) => (
+            <article
+              key={item.name}
+              className="menu__item reveal-scale"
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="menu__item-image">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  loading={index < 3 ? "eager" : "lazy"}
+                />
+                <div className="menu__item-overlay" />
+                <span className="menu__item-price">{item.price}</span>
+              </div>
 
-            <div className="menu__item-content">
-              <span className="menu__item-japanese">{item.japanese}</span>
-              <h3 className="menu__item-name">{item.name}</h3>
-              <p className="menu__item-desc">{item.description}</p>
-            </div>
-          </article>
-        ))}
+              <div className="menu__item-content">
+                <span className="menu__item-japanese">{item.japanese}</span>
+                <h3 className="menu__item-name">{item.name}</h3>
+                <p className="menu__item-desc">{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )

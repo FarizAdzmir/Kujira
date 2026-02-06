@@ -726,23 +726,20 @@
     transform: translateX(5px);
   }
 
+  .menu__container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
   .menu__scroll {
     position: relative;
     z-index: 20;
     display: flex;
     gap: var(--space-lg);
-    padding: 0 var(--space-md) var(--space-md);
+    padding: var(--space-sm) var(--space-md);
     padding-left: max(var(--space-md), calc((100vw - var(--max-width)) / 2 + var(--space-md)));
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .menu__scroll::-webkit-scrollbar {
-    display: none;
+    will-change: transform;
   }
   
   .menu__item {
@@ -752,7 +749,6 @@
     overflow: visible;
     cursor: pointer;
     transition: transform 0.4s ease;
-    scroll-snap-align: start;
   }
 
   .menu__item:hover {
@@ -866,8 +862,17 @@
     z-index: 3;
   }
   
-  /* Desktop */
+  /* Desktop: GSAP horizontal scroll-jacking */
   @media (min-width: 1025px) {
+    .menu__container {
+      overflow: hidden;
+    }
+
+    .menu__scroll {
+      flex-wrap: nowrap;
+      overflow: visible;
+    }
+
     .menu__item {
       width: 360px;
     }
@@ -875,34 +880,51 @@
   
   /* Tablet: Grid layout */
   @media (max-width: 1024px) and (min-width: 769px) {
+    .menu__container {
+      padding: var(--space-md) 0;
+    }
+
     .menu__scroll {
       flex-wrap: wrap;
       justify-content: center;
-      overflow-x: visible;
-      scroll-snap-type: none;
-      padding: var(--space-md);
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
       gap: var(--space-lg);
     }
 
     .menu__item {
       width: calc(50% - var(--space-md));
       min-width: 300px;
-      scroll-snap-align: none;
     }
   }
 
   /* Mobile: Swipeable carousel */
   @media (max-width: 768px) {
+    .menu__container {
+      padding: var(--space-sm) 0;
+    }
+
     .menu__scroll {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
       scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
+      padding-bottom: var(--space-sm);
       gap: var(--space-md);
+    }
+
+    .menu__scroll::-webkit-scrollbar {
+      display: none;
     }
 
     .menu__item {
       width: 85vw;
       max-width: 400px;
+      flex-shrink: 0;
       scroll-snap-align: center;
     }
 
