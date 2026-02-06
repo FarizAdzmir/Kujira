@@ -726,12 +726,6 @@
     transform: translateX(5px);
   }
 
-  .menu__container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-  }
-  
   .menu__scroll {
     position: relative;
     z-index: 20;
@@ -739,12 +733,22 @@
     gap: var(--space-md);
     padding: var(--space-sm) var(--space-md);
     padding-left: max(var(--space-md), calc((100vw - var(--max-width)) / 2 + var(--space-md)));
-    will-change: transform;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .menu__scroll::-webkit-scrollbar {
+    display: none;
   }
   
   .menu__item {
     flex: 0 0 auto;
     width: 340px;
+    scroll-snap-align: start;
     position: relative;
     overflow: visible;
     cursor: pointer;
@@ -862,28 +866,19 @@
     z-index: 3;
   }
   
-  /* Desktop: GSAP horizontal scroll-jacking */
+  /* Desktop: horizontal scroll */
   @media (min-width: 1025px) {
-    .menu__container {
-      overflow: hidden;
-    }
-
     .menu__scroll {
-      flex-wrap: nowrap;
-      overflow: visible;
-      padding-bottom: 0;
+      padding-bottom: var(--space-sm);
     }
   }
   
   /* Tablet: Grid layout */
   @media (max-width: 1024px) and (min-width: 769px) {
-    .menu__container {
-      padding: var(--space-lg) 0;
-    }
-
     .menu__scroll {
       flex-wrap: wrap;
       justify-content: center;
+      overflow-x: visible;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
       gap: var(--space-lg);
@@ -897,31 +892,16 @@
 
   /* Mobile: Swipeable carousel */
   @media (max-width: 768px) {
-    .menu__container {
-      padding: var(--space-md) 0;
-    }
-
     .menu__scroll {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      overflow-y: hidden;
       scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
-      padding-bottom: var(--space-md);
-      gap: var(--space-md);
-    }
-
-    .menu__scroll::-webkit-scrollbar {
-      display: none;
+      gap: var(--space-sm);
     }
 
     .menu__item {
       width: 85vw;
       max-width: 400px;
-      flex-shrink: 0;
       scroll-snap-align: center;
     }
 
