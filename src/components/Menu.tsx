@@ -131,16 +131,15 @@ export default function Menu() {
         scrollTrigger: {
           trigger: containerEl,
           start: "top top",
-          end: () => `+=${Math.abs(getScrollAmount()) * 0.6}`,
+          end: () => `+=${scrollEl.scrollWidth - window.innerWidth}`,
           pin: true,
-          scrub: 0.8,
+          scrub: 1,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           refreshPriority: -1,
         },
       })
 
-      // Force a refresh after a frame so all pin-spacing is accounted for
       requestAnimationFrame(() => {
         ScrollTrigger.refresh()
       })
