@@ -1,217 +1,279 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import type { Variants, Transition } from "framer-motion"
+import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const gentleEase: Transition = { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-const slowReveal: Transition = { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
-const defaultViewport = { once: true, amount: 0.2 as const }
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
-}
-const fadeUpScale: Variants = {
-  hidden: { opacity: 0, y: 40, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1 },
-}
-const clipReveal: Variants = {
-  hidden: { opacity: 0, clipPath: "inset(0 0 100% 0)" },
-  visible: { opacity: 1, clipPath: "inset(0 0 0% 0)" },
-}
-const staggerContainer = (staggerDelay = 0.1, delayChildren = 0): Variants => ({
-  hidden: {},
-  visible: { transition: { staggerChildren: staggerDelay, delayChildren } },
-})
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Reservation() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const kanjiRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    date: "",
-    partySize: "",
-    phone: "",
-  })
+    name: '',
+    email: '',
+    date: '',
+    partySize: '',
+    phone: ''
+  });
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const form = formRef.current;
+    if (!section || !form) return;
+
+    const ctx = gsap.context(() => {
+      // Kanji dramatic entrance
+      gsap.fromTo(kanjiRef.current,
+        { opacity: 0, scale: 2, rotation: 45 },
+        {
+          opacity: 0.08,
+          scale: 1,
+          rotation: 0,
+          duration: 1.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Label with underline effect
+      gsap.fromTo(labelRef.current,
+        { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
+        {
+          opacity: 1,
+          y: 0,
+          clipPath: 'inset(0 0 0% 0)',
+          duration: 1,
+          delay: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Title scale and fade
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 50, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          delay: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Subtitle
+      gsap.fromTo(subtitleRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          delay: 0.3,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Form inputs stagger animation
+      const inputs = form.querySelectorAll('.reservation__input, .reservation__button');
+      gsap.fromTo(inputs,
+        { opacity: 0, y: 30, x: -20 },
+        {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          duration: 0.8,
+          delay: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    alert(
-      "Thank you for your reservation request! We will contact you shortly."
-    )
-  }
+    e.preventDefault();
+    
+    // Button success animation
+    const button = formRef.current?.querySelector('.reservation__button');
+    if (button) {
+      gsap.to(button, {
+        scale: 0.95,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => {
+          alert('Thank you for your reservation request! We will contact you shortly.');
+        }
+      });
+    }
+  };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData((prev) => ({
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
+      [e.target.name]: e.target.value
+    }));
+  };
 
-  // Shared input animation variant
-  const inputVariant = {
-    hidden: { opacity: 0, y: 20, x: -10 },
-    visible: { opacity: 1, y: 0, x: 0 },
-  }
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    gsap.to(e.target, {
+      scale: 1.02,
+      duration: 0.3,
+      ease: 'power2.out'
+    });
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    gsap.to(e.target, {
+      scale: 1,
+      duration: 0.3,
+      ease: 'power2.out'
+    });
+  };
 
   return (
-    <section className="reservation" id="reservation">
-      <motion.div
-        className="reservation__container"
-        variants={staggerContainer(0.1, 0)}
-        initial="hidden"
-        whileInView="visible"
-        viewport={defaultViewport}
-      >
-        {/* Decorative kanji */}
-        <motion.div
-          className="reservation__kanji"
-          initial={{ opacity: 0, scale: 2.5, rotate: 45 }}
-          whileInView={{ opacity: 0.08, scale: 1, rotate: 0 }}
-          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          viewport={{ once: true }}
-          aria-hidden="true"
-        >
+    <section className="reservation" id="reservation" ref={sectionRef}>
+      <div className="reservation__container">
+        <div className="reservation__kanji" ref={kanjiRef} style={{ opacity: 0, transform: 'scale(2) rotate(45deg)' }}>
           予約
-        </motion.div>
-
-        <motion.span
-          className="reservation__label"
-          variants={clipReveal}
-          transition={gentleEase}
-        >
+        </div>
+        <span className="reservation__label" ref={labelRef} style={{ opacity: 0, transform: 'translateY(40px)', clipPath: 'inset(0 0 100% 0)' }}>
           Reserve Your Seat
-        </motion.span>
-
-        <motion.h2
-          className="reservation__title"
-          variants={fadeUpScale}
-          transition={slowReveal}
-        >
+        </span>
+        <h2 className="reservation__title" ref={titleRef} style={{ opacity: 0, transform: 'translateY(50px) scale(0.95)' }}>
           Begin Your Journey
-        </motion.h2>
-
-        <motion.p
-          className="reservation__subtitle"
-          variants={fadeUp}
-          transition={gentleEase}
-        >
-          Our intimate 12-seat counter fills quickly. Reserve your omakase
-          experience and discover why Kujira has been called &quot;a
-          transcendent journey through Japanese culinary art.&quot;
-        </motion.p>
-
-        <motion.form
-          className="reservation__form"
-          onSubmit={handleSubmit}
-          noValidate
-          variants={staggerContainer(0.07, 0.3)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-        >
+        </h2>
+        <p className="reservation__subtitle" ref={subtitleRef} style={{ opacity: 0, transform: 'translateY(30px)' }}>
+          Our intimate 12-seat counter fills quickly. Reserve your omakase experience and discover why Kujira has been called &quot;a transcendent journey through Japanese culinary art.&quot;
+        </p>
+        
+        <form className="reservation__form" ref={formRef} onSubmit={handleSubmit} noValidate>
           <div className="reservation__row">
-            <motion.div className="reservation__field" variants={inputVariant} transition={gentleEase}>
-              <label htmlFor="res-name" className="sr-only">
-                Your Name
-              </label>
-              <input
+            <div className="reservation__field">
+              <label htmlFor="res-name" className="sr-only">Your Name</label>
+              <input 
                 id="res-name"
-                type="text"
-                className="reservation__input"
-                placeholder="Your Name"
+                type="text" 
+                className="reservation__input" 
+                placeholder="Your Name" 
                 name="name"
                 autoComplete="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
               />
-            </motion.div>
-            <motion.div className="reservation__field" variants={inputVariant} transition={gentleEase}>
-              <label htmlFor="res-email" className="sr-only">
-                Email Address
-              </label>
-              <input
+            </div>
+            <div className="reservation__field">
+              <label htmlFor="res-email" className="sr-only">Email Address</label>
+              <input 
                 id="res-email"
-                type="email"
-                className="reservation__input"
-                placeholder="Email Address"
+                type="email" 
+                className="reservation__input" 
+                placeholder="Email Address" 
                 name="email"
                 autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
               />
-            </motion.div>
+            </div>
           </div>
-
           <div className="reservation__row">
-            <motion.div className="reservation__field" variants={inputVariant} transition={gentleEase}>
-              <label htmlFor="res-date" className="sr-only">
-                Reservation Date
-              </label>
-              <input
+            <div className="reservation__field">
+              <label htmlFor="res-date" className="sr-only">Reservation Date</label>
+              <input 
                 id="res-date"
-                type="date"
-                className="reservation__input"
+                type="date" 
+                className="reservation__input" 
                 name="date"
                 aria-label="Reservation date"
                 value={formData.date}
                 onChange={handleChange}
-                required
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                required 
               />
-            </motion.div>
-            <motion.div className="reservation__field" variants={inputVariant} transition={gentleEase}>
-              <label htmlFor="res-party" className="sr-only">
-                Party Size
-              </label>
-              <select
+            </div>
+            <div className="reservation__field">
+              <label htmlFor="res-party" className="sr-only">Party Size</label>
+              <select 
                 id="res-party"
-                className="reservation__input"
+                className="reservation__input" 
                 name="partySize"
                 aria-label="Party size"
                 value={formData.partySize}
                 onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
                 required
               >
-                <option value="" disabled>
-                  Party Size
-                </option>
+                <option value="" disabled>Party Size</option>
                 <option value="1">1 Guest</option>
                 <option value="2">2 Guests</option>
                 <option value="3">3 Guests</option>
                 <option value="4">4 Guests</option>
               </select>
-            </motion.div>
+            </div>
           </div>
-
-          <motion.div className="reservation__field" variants={inputVariant} transition={gentleEase}>
-            <label htmlFor="res-phone" className="sr-only">
-              Phone Number
-            </label>
-            <input
+          <div className="reservation__field">
+            <label htmlFor="res-phone" className="sr-only">Phone Number</label>
+            <input 
               id="res-phone"
-              type="tel"
-              className="reservation__input"
-              placeholder="Phone Number"
+              type="tel" 
+              className="reservation__input" 
+              placeholder="Phone Number" 
               name="phone"
               autoComplete="tel"
               value={formData.phone}
               onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
             />
-          </motion.div>
-
-          <motion.button
-            type="submit"
-            className="reservation__button"
-            variants={inputVariant}
-            transition={gentleEase}
-            whileHover={{ scale: 1.03, boxShadow: "0 6px 24px rgba(201, 169, 98, 0.3)" }}
-            whileTap={{ scale: 0.97 }}
-          >
+          </div>
+          <button type="submit" className="reservation__button" style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}>
             Request Reservation
-          </motion.button>
-        </motion.form>
-      </motion.div>
+          </button>
+        </form>
+      </div>
     </section>
-  )
+  );
 }

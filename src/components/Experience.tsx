@@ -1,169 +1,215 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
-import type { Variants, Transition } from "framer-motion"
-import { useRef, type MouseEvent } from "react"
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const gentleEase: Transition = { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-const slowReveal: Transition = { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
-const defaultViewport = { once: true, amount: 0.2 as const }
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
-}
-const fadeUpScale: Variants = {
-  hidden: { opacity: 0, y: 40, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1 },
-}
-const clipReveal: Variants = {
-  hidden: { opacity: 0, clipPath: "inset(0 0 100% 0)" },
-  visible: { opacity: 1, clipPath: "inset(0 0 0% 0)" },
-}
-const staggerContainer = (staggerDelay = 0.1, delayChildren = 0): Variants => ({
-  hidden: {},
-  visible: { transition: { staggerChildren: staggerDelay, delayChildren } },
-})
+gsap.registerPlugin(ScrollTrigger);
 
 const experienceItems = [
   {
     id: 1,
-    icon: "鮮",
-    title: "Daily Fresh",
-    description:
-      "Fish flown in daily from Tokyo's renowned Tsukiji Market, ensuring peak freshness and authentic flavors.",
+    icon: '鮮',
+    title: 'Daily Fresh',
+    description: "Fish flown in daily from Tokyo's renowned Tsukiji Market, ensuring peak freshness and authentic flavors."
   },
   {
     id: 2,
-    icon: "匠",
-    title: "Master Crafted",
-    description:
-      "Our itamae trained for over 15 years in Tokyo, bringing time-honored techniques to every creation.",
+    icon: '匠',
+    title: 'Master Crafted',
+    description: 'Our itamae trained for over 15 years in Tokyo, bringing time-honored techniques to every creation.'
   },
   {
     id: 3,
-    icon: "心",
-    title: "Heartfelt Service",
-    description:
-      "Intimate 12-seat counter experience where hospitality meets artistry in perfect harmony.",
-  },
-]
-
-function ExperienceCard({
-  item,
-  index,
-}: {
-  item: (typeof experienceItems)[number]
-  index: number
-}) {
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  // Smooth 3D tilt with spring physics
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  const rawRotateX = useTransform(mouseY, [-0.5, 0.5], [8, -8])
-  const rawRotateY = useTransform(mouseX, [-0.5, 0.5], [-8, 8])
-  const rotateX = useSpring(rawRotateX, { stiffness: 200, damping: 20 })
-  const rotateY = useSpring(rawRotateY, { stiffness: 200, damping: 20 })
-
-  // Icon float follows mouse
-  const rawIconX = useTransform(mouseX, [-0.5, 0.5], [-6, 6])
-  const rawIconY = useTransform(mouseY, [-0.5, 0.5], [-6, 6])
-  const iconX = useSpring(rawIconX, { stiffness: 150, damping: 15 })
-  const iconY = useSpring(rawIconY, { stiffness: 150, damping: 15 })
-
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = cardRef.current?.getBoundingClientRect()
-    if (!rect) return
-    mouseX.set((e.clientX - rect.left) / rect.width - 0.5)
-    mouseY.set((e.clientY - rect.top) / rect.height - 0.5)
+    icon: '心',
+    title: 'Heartfelt Service',
+    description: 'Intimate 12-seat counter experience where hospitality meets artistry in perfect harmony.'
   }
-
-  const handleMouseLeave = () => {
-    mouseX.set(0)
-    mouseY.set(0)
-  }
-
-  return (
-    <motion.div
-      ref={cardRef}
-      className="experience__item"
-      variants={fadeUpScale}
-      transition={{
-        ...slowReveal,
-        delay: 0.15 * index,
-      }}
-      style={{
-        rotateX,
-        rotateY,
-        transformPerspective: 800,
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileHover={{
-        borderColor: "rgba(201, 169, 98, 0.35)",
-        transition: { duration: 0.3 },
-      }}
-    >
-      <motion.span
-        className="experience__icon"
-        style={{ x: iconX, y: iconY }}
-        initial={{ scale: 0, rotate: -180 }}
-        whileInView={{ scale: 1, rotate: 0 }}
-        transition={{
-          delay: 0.3 + index * 0.12,
-          duration: 0.8,
-          type: "spring",
-          stiffness: 120,
-          damping: 12,
-        }}
-        viewport={{ once: true }}
-      >
-        {item.icon}
-      </motion.span>
-      <h3 className="experience__item-title">{item.title}</h3>
-      <p className="experience__item-text">{item.description}</p>
-    </motion.div>
-  )
-}
+];
 
 export default function Experience() {
-  return (
-    <section className="experience" id="experience">
-      <motion.div
-        className="experience__container"
-        variants={staggerContainer(0.12, 0)}
-        initial="hidden"
-        whileInView="visible"
-        viewport={defaultViewport}
-      >
-        <div className="experience__header">
-          <motion.span
-            className="experience__label"
-            variants={clipReveal}
-            transition={gentleEase}
-          >
-            The Kujira Way
-          </motion.span>
-          <motion.h2
-            className="experience__title"
-            variants={fadeUp}
-            transition={slowReveal}
-          >
-            An Unforgettable Experience
-          </motion.h2>
-        </div>
+  const sectionRef = useRef<HTMLElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const itemRefs = useRef<HTMLDivElement[]>([]);
 
-        <motion.div
-          className="experience__grid"
-          variants={staggerContainer(0.15, 0.3)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={defaultViewport}
-        >
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      // Label and title animations with split effect
+      gsap.fromTo(labelRef.current,
+        { opacity: 0, y: 40, rotateX: -20 },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 40, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          delay: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Experience items with stagger and rotation
+      itemRefs.current.forEach((item, index) => {
+        const icon = item.querySelector('.experience__icon');
+        const title = item.querySelector('.experience__item-title');
+        const text = item.querySelector('.experience__item-text');
+
+        // Container animation
+        gsap.fromTo(item,
+          { opacity: 0, y: 60, rotateY: -10 },
+          {
+            opacity: 1,
+            y: 0,
+            rotateY: 0,
+            duration: 1.2,
+            delay: 0.2 + index * 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 70%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+
+        // Icon scale-in animation
+        gsap.fromTo(icon,
+          { scale: 0, rotate: -180 },
+          {
+            scale: 1,
+            rotate: 0,
+            duration: 1,
+            delay: 0.4 + index * 0.15,
+            ease: 'back.out(1.7)',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 70%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+
+        // Hover parallax effect
+        gsap.to(item, {
+          scrollTrigger: {
+            trigger: item,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+          y: -20,
+          ease: 'none'
+        });
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const item = e.currentTarget;
+    const rect = item.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+
+    gsap.to(item, {
+      rotateY: x,
+      rotateX: -y,
+      duration: 0.3,
+      ease: 'power2.out',
+      overwrite: 'auto'
+    });
+
+    const icon = item.querySelector('.experience__icon');
+    if (icon) {
+      gsap.to(icon, {
+        x: x * 0.5,
+        y: y * 0.5,
+        duration: 0.3,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+
+    // Update CSS custom properties for radial gradient mask
+    item.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    item.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const item = e.currentTarget;
+    const icon = item.querySelector('.experience__icon');
+
+    gsap.to(item, {
+      rotateY: 0,
+      rotateX: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+      overwrite: 'auto'
+    });
+
+    if (icon) {
+      gsap.to(icon, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+  };
+
+  return (
+    <section className="experience" id="experience" ref={sectionRef}>
+      <div className="experience__container">
+        <div className="experience__header">
+          <span className="experience__label" ref={labelRef} style={{ opacity: 0, transform: 'translateY(40px) rotateX(-20deg)' }}>
+            The Kujira Way
+          </span>
+          <h2 className="experience__title" ref={titleRef} style={{ opacity: 0, transform: 'translateY(40px) scale(0.95)' }}>
+            An Unforgettable Experience
+          </h2>
+        </div>
+        
+        <div className="experience__grid">
           {experienceItems.map((item, index) => (
-            <ExperienceCard key={item.id} item={item} index={index} />
+            <div 
+              key={item.id} 
+              className="experience__item"
+              ref={(el) => { if (el) itemRefs.current[index] = el; }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              style={{ opacity: 0, transform: 'translateY(60px) rotateY(-10deg)' }}
+            >
+              <span className="experience__icon" style={{ transform: 'scale(0) rotate(-180deg)' }}>{item.icon}</span>
+              <h3 className="experience__item-title">{item.title}</h3>
+              <p className="experience__item-text">{item.description}</p>
+            </div>
           ))}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
-  )
+  );
 }

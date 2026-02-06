@@ -172,6 +172,13 @@
     padding: 0 var(--space-md);
     z-index: 1000;
     background: rgba(10, 10, 10, 0.95);
+    opacity: 1;
+    transition: opacity 0.25s ease;
+  }
+  
+  .nav.hidden {
+    opacity: 0;
+    pointer-events: none;
   }
   
   .nav__logo {
