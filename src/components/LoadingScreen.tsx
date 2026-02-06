@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 
 interface LoadingScreenProps {
   onLoadComplete: (images: HTMLImageElement[]) => void

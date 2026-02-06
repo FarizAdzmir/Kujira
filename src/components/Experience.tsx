@@ -1,14 +1,26 @@
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
+import type { Variants, Transition } from "framer-motion"
 import { useRef, type MouseEvent } from "react"
-import {
-  fadeUp,
-  fadeUpScale,
-  clipReveal,
-  staggerContainer,
-  slowReveal,
-  gentleEase,
-  defaultViewport,
-} from "@/lib/animations"
+
+const gentleEase: Transition = { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+const slowReveal: Transition = { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+const defaultViewport = { once: true, amount: 0.2 as const }
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+}
+const fadeUpScale: Variants = {
+  hidden: { opacity: 0, y: 40, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1 },
+}
+const clipReveal: Variants = {
+  hidden: { opacity: 0, clipPath: "inset(0 0 100% 0)" },
+  visible: { opacity: 1, clipPath: "inset(0 0 0% 0)" },
+}
+const staggerContainer = (staggerDelay = 0.1, delayChildren = 0): Variants => ({
+  hidden: {},
+  visible: { transition: { staggerChildren: staggerDelay, delayChildren } },
+})
 
 const experienceItems = [
   {

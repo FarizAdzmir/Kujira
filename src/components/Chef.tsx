@@ -1,13 +1,22 @@
-import { motion, useScroll, useTransform } from "motion/react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import type { Variants, Transition } from "framer-motion"
 import { useRef } from "react"
-import {
-  fadeUp,
-  fadeRight,
-  staggerContainer,
-  slowReveal,
-  gentleEase,
-  defaultViewport,
-} from "@/lib/animations"
+
+const gentleEase: Transition = { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+const slowReveal: Transition = { duration: 1.2, ease: [0.16, 1, 0.3, 1] }
+const defaultViewport = { once: true, amount: 0.2 as const }
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+}
+const fadeRight: Variants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: { opacity: 1, x: 0 },
+}
+const staggerContainer = (staggerDelay = 0.1, delayChildren = 0): Variants => ({
+  hidden: {},
+  visible: { transition: { staggerChildren: staggerDelay, delayChildren } },
+})
 
 export default function Chef() {
   const sectionRef = useRef<HTMLElement>(null)

@@ -1,10 +1,16 @@
-import { motion } from "motion/react"
-import {
-  fadeUp,
-  staggerContainer,
-  gentleEase,
-  earlyViewport,
-} from "@/lib/animations"
+import { motion } from "framer-motion"
+import type { Variants, Transition } from "framer-motion"
+
+const gentleEase: Transition = { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+const earlyViewport = { once: true, amount: 0.1 as const }
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+}
+const staggerContainer = (staggerDelay = 0.1, delayChildren = 0): Variants => ({
+  hidden: {},
+  visible: { transition: { staggerChildren: staggerDelay, delayChildren } },
+})
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
