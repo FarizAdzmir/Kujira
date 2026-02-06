@@ -659,7 +659,7 @@
     z-index: 30;
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: var(--space-lg) var(--space-md) var(--space-md);
+    padding: var(--space-xl) var(--space-md) var(--space-lg);
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -726,29 +726,26 @@
     transform: translateX(5px);
   }
 
+  .menu__container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  
   .menu__scroll {
     position: relative;
     z-index: 20;
     display: flex;
-    gap: var(--space-md);
-    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-lg);
+    padding: var(--space-md);
     padding-left: max(var(--space-md), calc((100vw - var(--max-width)) / 2 + var(--space-md)));
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .menu__scroll::-webkit-scrollbar {
-    display: none;
+    padding-right: var(--space-md);
+    will-change: transform;
   }
   
   .menu__item {
     flex: 0 0 auto;
-    width: 340px;
-    scroll-snap-align: start;
+    width: 400px;
     position: relative;
     overflow: visible;
     cursor: pointer;
@@ -866,19 +863,28 @@
     z-index: 3;
   }
   
-  /* Desktop: horizontal scroll */
+  /* Desktop: GSAP horizontal scroll-jacking */
   @media (min-width: 1025px) {
+    .menu__container {
+      overflow: hidden;
+    }
+
     .menu__scroll {
-      padding-bottom: var(--space-sm);
+      flex-wrap: nowrap;
+      overflow: visible;
+      padding-bottom: var(--space-xl);
     }
   }
   
   /* Tablet: Grid layout */
   @media (max-width: 1024px) and (min-width: 769px) {
+    .menu__container {
+      padding: var(--space-lg) 0;
+    }
+
     .menu__scroll {
       flex-wrap: wrap;
       justify-content: center;
-      overflow-x: visible;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
       gap: var(--space-lg);
@@ -892,16 +898,31 @@
 
   /* Mobile: Swipeable carousel */
   @media (max-width: 768px) {
+    .menu__container {
+      padding: var(--space-md) 0;
+    }
+
     .menu__scroll {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
       scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
-      gap: var(--space-sm);
+      padding-bottom: var(--space-lg);
+      gap: var(--space-md);
+    }
+
+    .menu__scroll::-webkit-scrollbar {
+      display: none;
     }
 
     .menu__item {
       width: 85vw;
       max-width: 400px;
+      flex-shrink: 0;
       scroll-snap-align: center;
     }
 

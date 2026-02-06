@@ -1,4 +1,8 @@
 import { useEffect, useRef } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface MenuItem {
   japanese: string
@@ -78,6 +82,8 @@ const menuItems: MenuItem[] = [
 
 export default function Menu() {
   const sectionRef = useRef<HTMLElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Reveal animations on scroll into view
   useEffect(() => {
@@ -104,6 +110,50 @@ export default function Menu() {
     return () => observer.disconnect()
   }, [])
 
+  // GSAP horizontal scroll on desktop
+  // Delay setup so the Hero's pinned ScrollTrigger (which adds pin-spacing)
+  // is already in place and start/end positions calculate correctly.
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    const containerEl = containerRef.current
+    if (!scrollEl || !containerEl) return
+
+    const mm = gsap.matchMedia()
+
+    mm.add("(min-width: 1025px)", () => {
+      const getScrollAmount = () => {
+        return -(scrollEl.scrollWidth - window.innerWidth)
+      }
+
+      const tween = gsap.to(scrollEl, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerEl,
+          start: "top top",
+          end: () => `+=${Math.abs(getScrollAmount())}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          // Lower priority so it recalculates after Hero's pin
+          refreshPriority: -1,
+        },
+      })
+
+      // Force a refresh after a frame so all pin-spacing is accounted for
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh()
+      })
+
+      return () => {
+        tween.kill()
+      }
+    })
+
+    return () => mm.revert()
+  }, [])
+
   return (
     <section ref={sectionRef} id="menu" className="menu">
       {/* Header */}
@@ -125,31 +175,33 @@ export default function Menu() {
         </a>
       </div>
 
-      {/* Horizontally scrollable cards */}
-      <div className="menu__scroll">
-        {menuItems.map((item, index) => (
-          <article
-            key={item.name}
-            className="menu__item reveal-scale"
-            style={{ transitionDelay: `${index * 100}ms` }}
-          >
-            <div className="menu__item-image">
-              <img
-                src={item.image}
-                alt={item.alt}
-                loading={index < 3 ? "eager" : "lazy"}
-              />
-              <div className="menu__item-overlay" />
-              <span className="menu__item-price">{item.price}</span>
-            </div>
+      {/* Scrollable menu container */}
+      <div ref={containerRef} className="menu__container">
+        <div ref={scrollRef} className="menu__scroll">
+          {menuItems.map((item, index) => (
+            <article
+              key={item.name}
+              className="menu__item reveal-scale"
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="menu__item-image">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  loading={index < 3 ? "eager" : "lazy"}
+                />
+                <div className="menu__item-overlay" />
+                <span className="menu__item-price">{item.price}</span>
+              </div>
 
-            <div className="menu__item-content">
-              <span className="menu__item-japanese">{item.japanese}</span>
-              <h3 className="menu__item-name">{item.name}</h3>
-              <p className="menu__item-desc">{item.description}</p>
-            </div>
-          </article>
-        ))}
+              <div className="menu__item-content">
+                <span className="menu__item-japanese">{item.japanese}</span>
+                <h3 className="menu__item-name">{item.name}</h3>
+                <p className="menu__item-desc">{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )
