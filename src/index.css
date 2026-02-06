@@ -872,7 +872,7 @@
     .menu__scroll {
       flex-wrap: nowrap;
       overflow: visible;
-      padding-bottom: var(--space-xl);
+      padding-bottom: var(--space-md);
     }
   }
   
@@ -911,7 +911,7 @@
       scrollbar-width: none;
       padding-left: var(--space-md);
       padding-right: var(--space-md);
-      padding-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
       gap: var(--space-md);
     }
 

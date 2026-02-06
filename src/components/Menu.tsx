@@ -131,12 +131,11 @@ export default function Menu() {
         scrollTrigger: {
           trigger: containerEl,
           start: "top top",
-          end: () => `+=${Math.abs(getScrollAmount())}`,
+          end: () => `+=${Math.abs(getScrollAmount()) * 0.6}`,
           pin: true,
-          scrub: 1,
+          scrub: 0.8,
           invalidateOnRefresh: true,
           anticipatePin: 1,
-          // Lower priority so it recalculates after Hero's pin
           refreshPriority: -1,
         },
       })
