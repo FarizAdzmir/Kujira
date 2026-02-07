@@ -53,7 +53,7 @@ export default function Philosophy() {
               aria-hidden="true"
             />
             <img
-              src="/images/menu/chef-hands.jpeg"
+              src="/images/menu/Chef-Hands.jpeg"
               alt="Master chef preparing sushi"
               className="absolute inset-0 w-full h-full object-cover"
             />

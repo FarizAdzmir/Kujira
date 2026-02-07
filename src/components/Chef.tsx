@@ -32,7 +32,7 @@ export default function Chef() {
       {/* Chef image */}
       <div className="absolute -top-[10%] left-0 z-[1] h-[120%] w-[60%]">
         <img
-          src="/images/chef.jpeg"
+          src="/images/menu/Chef.jpeg"
           alt="Master Chef Kentaro Yamada"
           className="h-full w-full object-cover opacity-70 grayscale-[40%]"
         />

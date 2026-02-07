@@ -19,7 +19,7 @@ const menuItems: MenuItem[] = [
     name: "Otoro",
     description: "Premium fatty bluefin tuna belly, melt-in-your-mouth texture",
     price: "$48",
-    image: "/images/menu/otoro.jpeg",
+    image: "/images/menu/Otoro.jpeg",
     alt: "Otoro - Premium fatty tuna",
   },
   {
@@ -27,7 +27,7 @@ const menuItems: MenuItem[] = [
     name: "Uni",
     description: "Hokkaido sea urchin, briny sweetness with creamy finish",
     price: "$36",
-    image: "/images/menu/uni.jpeg",
+    image: "/images/menu/Uni.jpeg",
     alt: "Uni - Hokkaido sea urchin",
   },
   {
@@ -35,7 +35,7 @@ const menuItems: MenuItem[] = [
     name: "A5 Wagyu",
     description: "Seared Miyazaki wagyu with truffle ponzu",
     price: "$32",
-    image: "/images/menu/wagyu.jpeg",
+    image: "/images/menu/Wagyu.jpeg",
     alt: "A5 Wagyu - Seared Miyazaki beef",
   },
   {
@@ -43,7 +43,7 @@ const menuItems: MenuItem[] = [
     name: "Amaebi",
     description: "Sweet shrimp, delicate and pristine from Hokkaido waters",
     price: "$28",
-    image: "/images/menu/amaebi.jpeg",
+    image: "/images/menu/Amaebi.jpeg",
     alt: "Amaebi - Sweet shrimp",
   },
   {
@@ -51,7 +51,7 @@ const menuItems: MenuItem[] = [
     name: "Anago",
     description: "Conger eel with house-made sweet soy glaze",
     price: "$24",
-    image: "/images/menu/anago.jpeg",
+    image: "/images/menu/Anago.jpeg",
     alt: "Anago - Conger eel",
   },
   {
@@ -59,7 +59,7 @@ const menuItems: MenuItem[] = [
     name: "Ikura",
     description: "Marinated salmon roe, jewel-like pearls bursting with umami",
     price: "$30",
-    image: "/images/menu/ikura.jpg",
+    image: "/images/menu/Ikura.jpg",
     alt: "Ikura - Marinated salmon roe",
   },
   {
@@ -67,7 +67,7 @@ const menuItems: MenuItem[] = [
     name: "Kinmedai",
     description: "Golden-eye snapper, torch-seared with yuzu and sea salt",
     price: "$34",
-    image: "/images/menu/kinmedai.jpg",
+    image: "/images/menu/Kinmedai.jpg",
     alt: "Kinmedai - Golden-eye snapper",
   },
   {
@@ -75,7 +75,7 @@ const menuItems: MenuItem[] = [
     name: "Chutoro",
     description: "Medium fatty tuna, the perfect balance of lean and rich",
     price: "$42",
-    image: "/images/menu/chutoro.jpg",
+    image: "/images/menu/Chutoro.jpg",
     alt: "Chutoro - Medium fatty tuna",
   },
 ]
