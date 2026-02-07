@@ -21,6 +21,11 @@ export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
   useEffect(() => {
     if (!isLoaded || preloadedImages.length === 0 || !canvasRef.current || !containerRef.current) return;
 
+    // Force scroll to top before ScrollTrigger initializes
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -75,6 +80,9 @@ export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    // Force scroll position to top one more time before creating ScrollTrigger
+    window.scrollTo(0, 0);
+
     // ScrollTrigger animation — high refreshPriority so its pin-spacing
     // is resolved before downstream ScrollTriggers (Menu, etc.) calculate.
     const scrollTrigger = ScrollTrigger.create({
@@ -92,6 +100,9 @@ export default function Hero({ isLoaded, preloadedImages }: HeroProps) {
         renderFrame(frameIndex);
       }
     });
+
+    // Ensure ScrollTrigger recalculates from scroll position 0
+    ScrollTrigger.refresh();
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);

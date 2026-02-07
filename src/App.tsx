@@ -14,16 +14,35 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const preloadedImagesRef = useRef<HTMLImageElement[]>([]);
 
-  // Always start at the top on page load / refresh
+  // Always start at the top on page load / refresh - BEFORE anything renders
   useEffect(() => {
+    // Set scroll restoration to manual
     window.history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
+    
+    // Force scroll to top aggressively
+    const forceScrollToTop = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    
+    forceScrollToTop();
+    
+    // Additional failsafe
+    const timeoutId = setTimeout(forceScrollToTop, 50);
+    
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleLoadComplete = useCallback((images: HTMLImageElement[]) => {
     preloadedImagesRef.current = images;
     setIsLoading(false);
     setIsLoaded(true);
+    
+    // Enable smooth scrolling after page is fully loaded and positioned
+    setTimeout(() => {
+      document.documentElement.classList.add('loaded');
+    }, 100);
   }, []);
 
   return (

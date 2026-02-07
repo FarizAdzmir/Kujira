@@ -29,7 +29,17 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
         setProgress(currentProgress);
 
         if (loadedCount === frameCount) {
+          // Force scroll to top IMMEDIATELY when loading completes, BEFORE preloader fades
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          
           setTimeout(() => {
+            // Force scroll to top again right before fade starts
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            
             setIsHidden(true);
             setTimeout(() => onLoadComplete(images), 800);
           }, 500);
