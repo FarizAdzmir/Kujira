@@ -650,8 +650,10 @@
   /* Menu */
   .menu {
     position: relative;
-    background-color: var(--color-black-light);
+    background-color: var(--color-black);
     overflow: hidden;
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-xl);
   }
 
   .menu__header {
@@ -739,7 +741,7 @@
     gap: var(--space-lg);
     padding: var(--space-md);
     padding-left: max(var(--space-md), calc((100vw - var(--max-width)) / 2 + var(--space-md)));
-    padding-right: var(--space-md);
+    padding-right: max(var(--space-md), calc((100vw - var(--max-width)) / 2 + var(--space-md)));
     will-change: transform;
   }
   
@@ -750,6 +752,13 @@
     overflow: visible;
     cursor: pointer;
     transition: transform 0.4s ease;
+  }
+  
+  /* Invisible spacer card for proper end spacing */
+  .menu__item--spacer {
+    visibility: hidden;
+    pointer-events: none;
+    cursor: default;
   }
 
   .menu__item:hover {
@@ -803,11 +812,11 @@
     height: 100%;
     background: linear-gradient(
       to top,
-      rgba(10, 10, 10, 0.95) 0%,
-      rgba(10, 10, 10, 0.8) 20%,
-      rgba(10, 10, 10, 0.5) 40%,
-      rgba(10, 10, 10, 0.15) 60%,
-      transparent 75%
+      rgba(10, 10, 10, 0.98) 0%,
+      rgba(10, 10, 10, 0.92) 25%,
+      rgba(10, 10, 10, 0.7) 45%,
+      rgba(10, 10, 10, 0.3) 65%,
+      transparent 80%
     );
     z-index: 3;
     pointer-events: none;
@@ -831,6 +840,7 @@
     letter-spacing: 0.2em;
     margin-bottom: var(--space-xs);
     display: block;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
   }
   
   .menu__item-name {
@@ -839,6 +849,7 @@
     font-weight: 400;
     color: var(--color-cream);
     margin-bottom: var(--space-xs);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   }
   
   .menu__item-desc {
@@ -847,6 +858,7 @@
     font-weight: 300;
     color: var(--color-cream-dark);
     line-height: 1.6;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
   }
   
   .menu__item-price {
@@ -863,7 +875,7 @@
     z-index: 3;
   }
   
-  /* Desktop: GSAP horizontal scroll-jacking */
+  /* Desktop: GSAP horizontal scroll */
   @media (min-width: 1025px) {
     .menu__container {
       overflow: hidden;
@@ -872,6 +884,7 @@
     .menu__scroll {
       flex-wrap: nowrap;
       overflow: visible;
+      padding-top: var(--space-xl);
       padding-bottom: var(--space-xl);
     }
   }
@@ -1191,7 +1204,7 @@
   .reservation {
     position: relative;
     padding: var(--space-2xl) var(--space-md);
-    background-color: var(--color-black-light);
+    background-color: var(--color-black);
     text-align: center;
   }
   
