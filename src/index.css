@@ -988,16 +988,19 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-lg);
+    perspective: 800px;
   }
   
   .experience__item {
     text-align: center;
     padding: var(--space-lg);
     border: 1px solid transparent;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
     position: relative;
     overflow: hidden;
     background-color: var(--color-black);
+    transform-style: preserve-3d;
+    will-change: transform;
   }
   
   .experience__item::before {
@@ -1278,7 +1281,7 @@
     background-color: transparent;
     border: 1px solid rgba(201, 169, 98, 0.3);
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
   }
   
   .reservation__input::placeholder {
@@ -1287,6 +1290,7 @@
   
   .reservation__input:focus {
     border-color: var(--color-gold);
+    box-shadow: 0 0 0 1px rgba(201, 169, 98, 0.15), 0 0 16px rgba(201, 169, 98, 0.1);
   }
   
   .reservation__button {

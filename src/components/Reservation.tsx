@@ -26,67 +26,13 @@ export default function Reservation() {
     if (!section || !form) return;
 
     const ctx = gsap.context(() => {
-      // Kanji dramatic entrance
+      // Kanji — gentle fade in
       gsap.fromTo(kanjiRef.current,
-        { opacity: 0, scale: 2, rotation: 45 },
+        { opacity: 0, y: 10 },
         {
           opacity: 0.08,
-          scale: 1,
-          rotation: 0,
-          duration: 1.5,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          }
-        }
-      );
-
-      // Label with underline effect
-      gsap.fromTo(labelRef.current,
-        { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
-        {
-          opacity: 1,
           y: 0,
-          clipPath: 'inset(0 0 0% 0)',
-          duration: 1,
-          delay: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          }
-        }
-      );
-
-      // Title scale and fade
-      gsap.fromTo(titleRef.current,
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
           duration: 1.2,
-          delay: 0.2,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 80%',
-            toggleActions: 'play none none none'
-          }
-        }
-      );
-
-      // Subtitle
-      gsap.fromTo(subtitleRef.current,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          delay: 0.3,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: section,
@@ -96,17 +42,67 @@ export default function Reservation() {
         }
       );
 
-      // Form inputs stagger animation
-      const inputs = form.querySelectorAll('.reservation__input, .reservation__button');
-      gsap.fromTo(inputs,
-        { opacity: 0, y: 30, x: -20 },
+      // Label — simple fade + rise
+      gsap.fromTo(labelRef.current,
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          x: 0,
           duration: 0.8,
-          delay: 0.5,
-          stagger: 0.08,
+          delay: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Title — fade + rise
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Subtitle — fade + rise
+      gsap.fromTo(subtitleRef.current,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: 0.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+
+      // Form inputs — clean fade-up stagger
+      const inputs = form.querySelectorAll('.reservation__input, .reservation__button');
+      gsap.fromTo(inputs,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          delay: 0.3,
+          stagger: 0.06,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: section,
@@ -145,35 +141,21 @@ export default function Reservation() {
     }));
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    gsap.to(e.target, {
-      scale: 1.02,
-      duration: 0.3,
-      ease: 'power2.out'
-    });
-  };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    gsap.to(e.target, {
-      scale: 1,
-      duration: 0.3,
-      ease: 'power2.out'
-    });
-  };
 
   return (
     <section className="reservation" id="reservation" ref={sectionRef}>
       <div className="reservation__container">
-        <div className="reservation__kanji" ref={kanjiRef} style={{ opacity: 0, transform: 'scale(2) rotate(45deg)' }}>
+        <div className="reservation__kanji" ref={kanjiRef} style={{ opacity: 0, transform: 'translateY(10px)' }}>
           予約
         </div>
-        <span className="reservation__label" ref={labelRef} style={{ opacity: 0, transform: 'translateY(40px)', clipPath: 'inset(0 0 100% 0)' }}>
+        <span className="reservation__label" ref={labelRef} style={{ opacity: 0, transform: 'translateY(20px)' }}>
           Reserve Your Seat
         </span>
-        <h2 className="reservation__title" ref={titleRef} style={{ opacity: 0, transform: 'translateY(50px) scale(0.95)' }}>
+        <h2 className="reservation__title" ref={titleRef} style={{ opacity: 0, transform: 'translateY(20px)' }}>
           Begin Your Journey
         </h2>
-        <p className="reservation__subtitle" ref={subtitleRef} style={{ opacity: 0, transform: 'translateY(30px)' }}>
+        <p className="reservation__subtitle" ref={subtitleRef} style={{ opacity: 0, transform: 'translateY(16px)' }}>
           Our intimate 12-seat counter fills quickly. Reserve your omakase experience and discover why Kujira has been called &quot;a transcendent journey through Japanese culinary art.&quot;
         </p>
         
@@ -190,9 +172,7 @@ export default function Reservation() {
                 autoComplete="name"
                 value={formData.name}
                 onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                style={{ opacity: 0, transform: 'translateY(16px)' }}
                 required 
               />
             </div>
@@ -207,9 +187,7 @@ export default function Reservation() {
                 autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                style={{ opacity: 0, transform: 'translateY(16px)' }}
                 required 
               />
             </div>
@@ -225,9 +203,7 @@ export default function Reservation() {
                 aria-label="Reservation date"
                 value={formData.date}
                 onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                style={{ opacity: 0, transform: 'translateY(16px)' }}
                 required 
               />
             </div>
@@ -240,9 +216,7 @@ export default function Reservation() {
                 aria-label="Party size"
                 value={formData.partySize}
                 onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+                style={{ opacity: 0, transform: 'translateY(16px)' }}
                 required
               >
                 <option value="" disabled>Party Size</option>
@@ -264,12 +238,10 @@ export default function Reservation() {
               autoComplete="tel"
               value={formData.phone}
               onChange={handleChange}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}
+              style={{ opacity: 0, transform: 'translateY(16px)' }}
             />
           </div>
-          <button type="submit" className="reservation__button" style={{ opacity: 0, transform: 'translate(-20px, 30px)' }}>
+          <button type="submit" className="reservation__button" style={{ opacity: 0, transform: 'translateY(16px)' }}>
             Request Reservation
           </button>
         </form>
