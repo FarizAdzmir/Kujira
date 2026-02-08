@@ -1298,6 +1298,17 @@
     box-shadow: 0 0 0 1px rgba(201, 169, 98, 0.15), 0 0 16px rgba(201, 169, 98, 0.1);
   }
   
+  /* Fix date input width to match other inputs */
+  .reservation__input[type="date"] {
+    min-width: 0;
+    max-width: 100%;
+  }
+  
+  /* Ensure date picker icon/calendar doesn't cause overflow */
+  .reservation__input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+  
   .reservation__button {
     margin-top: var(--space-sm);
     padding: var(--space-sm) var(--space-lg);
